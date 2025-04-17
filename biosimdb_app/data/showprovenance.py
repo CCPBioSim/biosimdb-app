@@ -107,7 +107,7 @@ def show_provenance_text(archive_filepath):
                 if isinstance(inputs, orm.SinglefileData):
                     # file = open_file(inputs)
                     input_str = inputs.filename
-                    print("* INPUT FILE:", input_str)
+                    # print("* INPUT FILE:", input_str)
                     # print(dir(inputs)) # check attributes for inputs
                     # content = inputs.get_content()
                     chunk = "None"
@@ -117,19 +117,19 @@ def show_provenance_text(archive_filepath):
                             filepath = filepath
                             extension = os.path.splitext(inputs.filename)[1].replace('.', '')
                             if extension in ['psf', 'top', 'prmtop', 'parm7', 'pdb', 'ent', 'xpdb', 'pqr', 'gro', 'crd', 'pdbqt', 'dms', 'tpr', 'mol2', 'data', 'lammpsdump', 'xyz', 'txyz', 'arc', 'gms', 'config', 'history', 'xml', 'mmtf', 'gsd', 'minimal', 'itp', 'in', 'fhiaims', 'parmed', 'rdkit', 'openmmtopology', 'openmmapp']:
-                                print("\t*** FILE:", inputs.filename)
+                                # print("\t*** FILE:", inputs.filename)
                                 u = None
                                 try:
                                     u = mda.Universe(filepath, topology_format=extension)
                                 except:
                                     pass
-                                if u:
-                                    #print(dir(u))
-                                    #print(u.residues, u.atoms)
-                                    try:
-                                        print(u.atoms.positions)
-                                    except:
-                                        pass
+                                # if u:
+                                #     #print(dir(u))
+                                #     #print(u.residues, u.atoms)
+                                #     try:
+                                #         print(u.atoms.positions)
+                                #     except:
+                                #         pass
                         try:
                             chunk = chunk.decode("utf-8")
                         except:

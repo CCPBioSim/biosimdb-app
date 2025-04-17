@@ -7,11 +7,14 @@ from .inspect_aiida_db import aiida_attributes
 from biosimdb_app.utils.db import get_db
 import json
 
+from .simulationInspector import fetch_top_traj_files
+
 @bp.route('/BioSimDB', methods=['GET'])
 def display_data():
     """
     Display X number of database entries
     """
+    # get all the "projects" in the database and render
     query = 'SELECT * FROM `project`'
     records, page, total_pages, sort_column, sort_direction = get_data(query)
     return render_template('data/showdata.html', page_name="/BioSimDB", 
@@ -102,6 +105,9 @@ def entry_info(project_ID):
             top_records = (top_records + m * [{}])[:m]
         if len(traj_records) < m:
             traj_records = (traj_records + m * [{}])[:m]
+
+        # get the mda universe from the top and traj files for each record entry
+        fetch_top_traj_files(sim_records)
 
         return render_template('data/entry.html', project_records=project_records, 
                 sim_records=sim_records, top_records=top_records, 

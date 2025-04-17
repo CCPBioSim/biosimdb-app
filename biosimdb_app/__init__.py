@@ -26,6 +26,7 @@ def create_app(test_config=None):
             # where the SQLite database file will be saved
         MYSQL_CURSORCLASS="DictCursor",
         UPLOAD_FOLDER=UPLOAD_FOLDER,
+        DATA_FOLDER=os.path.join(app.instance_path, 'simulations'),
     ) # sets some default configuration that the app will use
 
     if test_config is None:

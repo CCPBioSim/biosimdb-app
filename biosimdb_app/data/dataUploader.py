@@ -12,7 +12,7 @@ from aiida.storage.sqlite_zip.backend import SqliteZipBackend
 
 import MDAnalysis as mda
 
-from biosimdb_app.data.simulationParser import extract_from_mda_universe, extract_from_aiida_archive, get_protein_seq
+from biosimdb_app.data.simulationParser import extract_from_mda_universe, extract_from_aiida_archive #, get_protein_seq
 
 def get_UC_time():
     """
@@ -33,7 +33,7 @@ def save_uploaded_files(db, cursor, project_ID):
     temp_folder = current_app.config['UPLOAD_FOLDER']
     os.makedirs(temp_folder, exist_ok=True)
     # Create directories for simulation files
-    main_folder = os.path.join(current_app.instance_path, "simulations")
+    main_folder = current_app.config['DATA_FOLDER']
     os.makedirs(main_folder, exist_ok=True)
     # Get the current date and time, will use it as folder name
     date = get_UC_time()
@@ -52,17 +52,19 @@ def save_uploaded_files(db, cursor, project_ID):
 
         if (len(top_file) == 1 and top_file[0].filename != '' and 
             len(traj_files) > 0 and traj_files[0].filename != ''):
+            #temp_folder2 = os.path.join(temp_folder, entry_folder)
+            #os.makedirs(temp_folder2, exist_ok=True)
             top_file_paths, top_file_names = move_to_temp_folder(top_file, temp_folder)
             traj_file_paths, traj_file_names = move_to_temp_folder(traj_files, temp_folder)
             extension = os.path.splitext(top_file[0].filename)[1].replace('.', '')
-            u = mda.Universe(top_file_paths[0], traj_file_paths, topology_format=extension)
+            # u = mda.Universe(top_file_paths[0], traj_file_paths, topology_format=extension)
             try:
                 u = mda.Universe(top_file_paths[0], traj_file_paths, topology_format=extension)
             except (ValueError, TypeError):
                 flash(f"Topology: \"{', '.join(top_file_names)}\" and trajectory: \"{', '.join(traj_file_names)}\" for entry {i}, are unreadable, ensure they are readable in MDAnalysis before uploading.")
                 return redirect(url_for("form.webform"))
             if u:
-                get_protein_seq(u)
+                # get_protein_seq(u)
                 upload_top_traj(top_file, traj_files, entry_folder)
                 mda_u_dict = extract_from_mda_universe(u)
 
@@ -167,6 +169,8 @@ def move_to_temp_folder(uploaded_files, temp_folder):
         if file:
             file_path = os.path.join(temp_folder, file.filename)
             file.save(file_path)
+            # size = os.stat(file_path).st_size
+            # print("size", size)
             if file_path not in file_paths:
                 file_paths.append(file_path)  
                 file_names.append(file.filename)  
@@ -209,10 +213,27 @@ def upload_single_file(file, new_file_name, current_file_name, destination_folde
     """
     Upload single file to relevant folder
     """
+    # Determine file length (optional, for logging)
+    file.seek(0, os.SEEK_END)
+    file_length = file.tell()
+    print("XXXX", file.filename, file_length)
+
+    # Reset cursor before saving
+    file.seek(0)
+
+    # Make sure destination exists
     os.makedirs(destination_folder, exist_ok=True)
-    dotextension = os.path.splitext(current_file_name)[1] #.replace('.', '')
+
+    # Build final file name
+    dotextension = os.path.splitext(current_file_name)[1]
     new_file_name = new_file_name + dotextension
     new_file_path = os.path.join(destination_folder, new_file_name)
+
+    # Save file
     file.save(new_file_path)
+
+    # Check saved size
+    size = os.stat(new_file_path).st_size
+    print("XXXX2", file.filename, size)
 
     return None, None, None

@@ -3,20 +3,13 @@
 from flask import current_app
 import os
 import json
+import sys
 
 import MDAnalysis as mda
 import Bio.SeqIO
 import aiida
 from aiida import orm, profile_context
 from aiida.storage.sqlite_zip.backend import SqliteZipBackend
-
-
-def get_protein_seq(u):
-    """
-    """
-    protein = u.select_atoms("protein").residues
-    seq = protein.sequence(id="sequence1", name="protein1")
-    print(seq)
 
 
 def extract_from_mda_universe(u):

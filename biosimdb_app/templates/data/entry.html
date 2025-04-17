@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pagination Example</title>
+    <title>Entry</title>
     {% include 'main/head.html' %}
     {% include 'main/nav.html' %}
 </head>
@@ -99,7 +99,25 @@
         {% endfor %}
 
         <br>
+
+    </br>
+        <h1 class="text-left">Explore Provenance</h1>
+        </br>
+        <p class="text-left">
+            Upload MD provenance archive file to view protocol steps:
+        </p>
+        <form class="row g-2" action="/showprovenance" method="POST" enctype="multipart/form-data">
+            <div class="col-auto">
+                <input class="form-control" type="file" id="archive_file" name="archive_file">
+            </div>
+            <div class="col-auto">
+                <input type="submit" class="btn btn-outline-primary" name="submit" value="View">
+            </div>
+        </form>
+    <br>
     </div>
+
+
     {% include 'main/footer.html' %}
 </body>
 </html>

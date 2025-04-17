@@ -32,6 +32,7 @@ dependencies = [
     "python-dotenv==1.0.1",
     "MDAnalysis==2.7.0",
     "biopython==1.84",
+    "rcsbsearchapi==1.6.0",
 ]
 
 [project.urls]
