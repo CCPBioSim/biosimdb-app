@@ -8,6 +8,14 @@ This database can be used to store and explore archive files and gives a
 taster for how biomolecular MD simulation data provenance can be stored for 
 multiple research projects.
 
+To install dependencies into a conda environment:
+
+```console
+user@computer:~$ conda create -n biosimdb-app
+user@computer:~$ conda activate biosimdb-app
+user@computer:~$ pip install .
+```
+
 To initate the database the first time you use the application, type the following:
 
 ```console
