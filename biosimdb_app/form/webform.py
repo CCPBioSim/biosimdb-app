@@ -14,6 +14,9 @@ def webform():
     if request.method == "POST":
         user_name = request.form["creator_name"]
         user_email = request.form["creator_email"]
+        # TO-DO: add institution to database
+        user_institution = request.form["creator_institution"]
+        # TO-DO: add other authors institution into webform and db
         sim_authors1 = request.form.getlist('author_name[]')
         sim_authors = json.dumps([user_name]+sim_authors1) # sqlite does not accept lists as inputs
         sim_system = request.form["sim_title"]
