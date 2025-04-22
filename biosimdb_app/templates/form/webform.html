@@ -2,11 +2,12 @@
 
 <head>
     <title>BioSimDB webform</title>
-    {% include 'main/head.html' %}
-    {% include 'main/nav.html' %}
+    {% extends "main/base.html" %}
 </head>
 
 <body>
+
+    {% block content %}
 
     <!--*******************************************-->
     <div class="container">
@@ -128,11 +129,11 @@
     </div>
     </form>
 
+    {% endblock %}
+
     {% block scripts %}
     <script src="{{ url_for('static', filename='js/webform.js') }}"></script>
     {% endblock %}
-
-    {% include 'main/footer.html' %}
 </body>
 
 </html>

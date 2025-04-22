@@ -2,10 +2,10 @@
 <html>
 <head>
     <title>BioSimDB</title>
-    {% include 'main/head.html' %}
-    {% include 'main/nav.html' %}
+    {% extends "main/base.html" %}
 </head>
-</html>
+
+{% block content %}
 
 <body class="d-flex flex-column min-vh-100">
 
@@ -43,6 +43,8 @@
         {% endif %}
     <br>
     </div>
-    {% include 'main/footer.html' %}
 </body>
+
+{% endblock %}
+
 </html>

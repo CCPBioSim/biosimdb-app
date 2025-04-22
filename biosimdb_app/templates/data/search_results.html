@@ -2,9 +2,11 @@
 <html>
 <head>
     <title>BioSimDB</title>
-    {% include 'main/head.html' %}
-    {% include 'main/nav.html' %}
+    {% extends "main/base.html" %}
 </head>
+
+{% block content %}
+
 <body class="d-flex flex-column min-vh-100">
     <div class="container bg-white rounded border">
     </br>
@@ -35,6 +37,8 @@
         {% include 'data/pagination.html' %}
         <br>
     </div>
-    {% include 'main/footer.html' %}
 </body>
+
+{% endblock %}
+
 </html>
