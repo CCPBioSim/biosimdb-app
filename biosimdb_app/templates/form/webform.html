@@ -93,33 +93,40 @@
         <label for="description" class="form-label">Abstract <span class="required">*</span></label>
         <textarea class="form-control" id="description" rows="2" name="sim_description" required placeholder="Add why the simulation was performed and its scientific significance"></textarea>
 
+          <!--*******************************************-->   
           <div id="downloadFields">
             <br /><br /><h4>3. Add simulation files</h4>
             <p>Upload a topology and trajectory file, and/or upload the aiida archive file containing the full provenance of your simulation. </p>
+            <p>Note: A maximum of 5 entries can be uploaded per submission.</p>
             <p>Note: Multiple trajectory files can be uploaded with an associated topology file.</p>
-            <div>
-            <h5>Entry 1.</h5>
-            <div class="row form-group">
-                <div class="col-sm">
-                    <label for="download1" class="form-label">Upload topology file
-                    </label>
-                    <input class="form-control" type="file" id="download1" name="topology_file1[]">
-                </div>
-                <div class="col-sm">
-                    <label for="download1" class="form-label">Upload trajectory file/s
-                    </label>
-                    <input class="form-control" type="file" id="download1" name="trajectory_file1[]" multiple="">
-                </div>
-                <div class="col-sm">
-                    <label for="download1" class="form-label">Upload aiida archive file</label>
-                    <input class="form-control" type="file" id="download1" name="aiida_archive_file1[]">
-                </div>
+            <div class="entry-block">
+                <h5>Entry 1.</h5>
+                <div class="row form-group">
+                    <div class="col-sm">
+                        <label for="download1" class="form-label">Upload topology file
+                        </label>
+                        <input class="form-control" type="file" id="download1" name="topology_file1[]">
+                    </div>
+                    <div class="col-sm">
+                        <label for="download1" class="form-label">Upload trajectory file/s
+                        </label>
+                        <input class="form-control" type="file" id="download1" name="trajectory_file1[]" multiple="">
+                    </div>
+                    <div class="col-sm">
+                        <label for="download1" class="form-label">Upload aiida archive file</label>
+                        <input class="form-control" type="file" id="download1" name="aiida_archive_file1[]">
+                    </div>
+                </div> 
             </div> 
-          </div> 
           </div>  
+          <!--*******************************************-->   
         
           <div class="mt-3 d-grid gap-2">
-            <button type="button" class="btn btn-secondary btn-sm" id="addDownloadField">Add another simulation</button>
+
+            <button type="button" class="btn btn-secondary btn-sm" id="extractMetadataField">Extract entry metadata</button>
+
+            <button type="button" class="btn btn-secondary btn-sm" id="addDownloadField">Add another simulation entry</button>
+
             <input type="submit" class="btn btn-outline-success btn-lg" name="submit" value="Submit">
           </div>
           <br />
