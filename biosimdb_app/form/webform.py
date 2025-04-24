@@ -108,6 +108,7 @@ def parse_metadata():
     if not topo or not traj:
         # return jsonify({'error': 'Missing files'}), 400
         return jsonify({
+                "alert": "Simulation files are missing. Please upload files to automatically extract metadata.",
                 "title": "",
                 "description": "",
                 "n_atoms": "",

@@ -1,3 +1,62 @@
+// add author section of form when button is clicked
+document.getElementById('addAuthorField').addEventListener('click', function() {
+    const authorFields = document.getElementById('authorFields');
+    const authorCount = authorFields.childElementCount + 1; // depends on N uploads
+    if(authorCount < 16){
+        const newFormGroupHTML = `
+        <div class="row author-block">
+            <div class="col-sm">
+            <label for="author${authorCount}" class="form-label">Additional author/s</label>
+            <input type="text" class="form-control" id="author${authorCount}" placeholder="Enter full name of additional author" name="author_name[]">
+            </div>
+
+            <div class="mt-3 d-grid gap-2">
+                <button type="button" class="btn btn-sm btn-outline-danger remove-btn" data-type="author">Remove</button>
+            </div>
+
+        </div>
+    `;
+
+    const newField = document.createElement('div');
+    newField.className = 'row form-group';
+    newField.innerHTML = newFormGroupHTML;
+
+    authorFields.appendChild(newField);
+    }else{
+    alert('Limit of 15 authors per submission')
+    }
+});
+
+// add citation section of form when button is clicked
+document.getElementById('addCitationField').addEventListener('click', function() {
+    const citationFields = document.getElementById('citationFields');
+    const citationCount = citationFields.childElementCount + 1; // depends on N uploads
+    if(citationCount < 11){
+        const newFormGroupHTML = `
+        <div class="row citation-block">
+            <div class="col-sm">
+            <label for="citation${citationCount}" class="form-label">Additional citation</label>
+            <input type="text" class="form-control" id="author${citationCount}" placeholder="Include DOI of the published work related to uploaded simulation/s" name="citation_name[]">
+            </div>
+
+            <div class="mt-3 d-grid gap-2">
+                <button type="button" class="btn btn-sm btn-outline-danger remove-btn" data-type="citation">Remove</button>
+            </div>
+
+        </div>
+    `;
+
+    const newField = document.createElement('div');
+    newField.className = 'row form-group';
+    newField.innerHTML = newFormGroupHTML;
+
+    citationFields.appendChild(newField);
+    }else{
+    alert('Limit of 10 citations per submission')
+    }
+});
+
+// Add a new entry block if add button clicked
 document.getElementById('addSimulationField').addEventListener('click', function () {
     const simulationFields = document.getElementById('simulationFields');
     const simulationCount = simulationFields.querySelectorAll('.entry-block').length + 1;
@@ -12,6 +71,7 @@ document.getElementById('addSimulationField').addEventListener('click', function
     renumberEntries();
 });
 
+// create new simulation entry block with fields
 function createSimulationEntry(index) {
     const wrapper = document.createElement('div');
     wrapper.className = 'row form-group';
@@ -19,6 +79,7 @@ function createSimulationEntry(index) {
     return wrapper;
 }
 
+// populate a new entry block with upload file fields
 function getSimulationEntryHTML(index) {
     return `
     <div class="entry-block" data-index="${index}">
@@ -79,6 +140,27 @@ function getAccordionHTML(index) {
     `;
 }
 
+// remove entry blocks if not needed
+document.addEventListener('click', function (e) {
+    if (e.target.classList.contains('remove-btn')) {
+        const type = e.target.getAttribute('data-type');
+
+        // Find the corresponding block to remove
+        let blockClass = '';
+        if (type === 'author') blockClass = 'author-block';
+        else if (type === 'entry') blockClass = 'entry-block';
+        else if (type === 'citation') blockClass = 'citation-block';
+
+        const container = e.target.closest(`.${blockClass}`);
+        if (container) {
+            container.remove();
+
+            // Renumber if it's an entry
+            if (type === 'entry') renumberEntries();
+        }
+    }
+});
+
 // renumber entries if removed
 function renumberEntries() {
     const entries = document.querySelectorAll('#simulationFields .entry-block');
@@ -95,87 +177,7 @@ function renumberEntries() {
     });
 }
 
-// remove entry blocks if not needed
-document.addEventListener('click', function (e) {
-    if (e.target.classList.contains('remove-btn')) {
-        const type = e.target.getAttribute('data-type');
-
-        // Find the corresponding block to remove
-        let blockClass = '';
-        if (type === 'author') blockClass = 'author-block';
-        else if (type === 'entry') blockClass = 'entry-block';
-        else if (type === 'citation') blockClass = 'citation-block';
-
-        const container = e.target.closest(`.${blockClass}`);
-        if (container) {
-            container.remove();
-
-            // Optional: Renumber if it's an entry
-            if (type === 'entry') renumberEntries();
-        }
-    }
-});
-
-// add author section of form when button is clicked
-document.getElementById('addAuthorField').addEventListener('click', function() {
-    const authorFields = document.getElementById('authorFields');
-    const authorCount = authorFields.childElementCount + 1; // depends on N uploads
-    if(authorCount < 16){
-        const newFormGroupHTML = `
-        <div class="row author-block">
-            <div class="col-sm">
-            <label for="author${authorCount}" class="form-label">Additional author/s</label>
-            <input type="text" class="form-control" id="author${authorCount}" placeholder="Enter full name of additional author" name="author_name[]">
-            </div>
-
-            <div class="mt-3 d-grid gap-2">
-                <button type="button" class="btn btn-sm btn-outline-danger remove-btn" data-type="author">Remove</button>
-            </div>
-
-        </div>
-    `;
-
-    const newField = document.createElement('div');
-    newField.className = 'row form-group';
-    newField.innerHTML = newFormGroupHTML;
-
-    authorFields.appendChild(newField);
-    }else{
-    alert('Limit of 15 authors per submission')
-    }
-});
-
-// add citation section of form when button is clicked
-document.getElementById('addCitationField').addEventListener('click', function() {
-    const citationFields = document.getElementById('citationFields');
-    const citationCount = citationFields.childElementCount + 1; // depends on N uploads
-    if(citationCount < 11){
-        const newFormGroupHTML = `
-        <div class="row citation-block">
-            <div class="col-sm">
-            <label for="citation${citationCount}" class="form-label">Additional citation</label>
-            <input type="text" class="form-control" id="author${citationCount}" placeholder="Include DOI of the published work related to uploaded simulation/s" name="citation_name[]">
-            </div>
-
-            <div class="mt-3 d-grid gap-2">
-                <button type="button" class="btn btn-sm btn-outline-danger remove-btn" data-type="citation">Remove</button>
-            </div>
-
-        </div>
-    `;
-
-    const newField = document.createElement('div');
-    newField.className = 'row form-group';
-    newField.innerHTML = newFormGroupHTML;
-
-    citationFields.appendChild(newField);
-    }else{
-    alert('Limit of 10 citations per submission')
-    }
-});
-
-
-// add metadata to form by parsing topology and traj
+// add metadata to simulation entry by parsing topology and traj
 document.addEventListener('click', function (e) {
     if (e.target && e.target.classList.contains('extract-metadata-btn')) {
         const entry = e.target.closest('.entry-block');
@@ -213,22 +215,36 @@ document.addEventListener('click', function (e) {
     }
 });
 
-// Populate the metadata into the webform html
+// Populate the metadata into the simulation entry accordion
 function renderMetadataFields(index, entry, metadata) {
     const container = entry.querySelector(`.metadata-fields${index}`);
     container.innerHTML = ''; // Clear previous metadata fields
 
-    // Check for error and display it clearly
+    // Check for error in metadata key and display it
     if (metadata.error) {
         const alert = document.createElement('div');
         alert.className = 'alert alert-danger';
         alert.role = 'alert';
         alert.textContent = `Metadata extraction failed: ${metadata.error}`;
         container.appendChild(alert);
-        return;
+        return; // don't render rest of metadata
     }
 
+    // if there is an alert key, display it
+    if (metadata.alert) {
+        // alert(metadata.alert);
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-danger';
+        alert.role = 'alert';
+        alert.textContent = `Metadata extraction failed: ${metadata.alert}`;
+        container.appendChild(alert);
+        //return; // don't return, continue rendering rest of metadata
+    }
+
+    // iterate over all key value pairs and render
     for (const [key, value] of Object.entries(metadata)) {
+        // ignore the alert key if returned from server
+        if (key === 'alert') continue;
         const label = document.createElement('label');
         label.className = 'form-label mt-2';
         label.textContent = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
