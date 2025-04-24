@@ -1,8 +1,11 @@
 #!/usr/bin/env python
+import os
 from . import form_bp
-from flask import render_template, request, flash
+from flask import render_template, request, flash, jsonify
 from biosimdb_app.utils.db import get_db
 import json
+import tempfile
+from MDAnalysis import Universe
 
 from biosimdb_app.data.dataUploader import save_uploaded_files
 
@@ -94,3 +97,62 @@ def get_project_ID(cursor, creator_ID):
     result = cursor.fetchone()
     project_ID = result["project_ID"]
     return project_ID
+
+
+@form_bp.route('/parse-metadata', methods=['POST'])
+def parse_metadata():
+    topo = request.files.get('topology')
+    traj = request.files.get('trajectory')
+
+    # Just return the empty metadata fields if no files are uploaded
+    if not topo or not traj:
+        # return jsonify({'error': 'Missing files'}), 400
+        return jsonify({
+                "title": "",
+                "description": "",
+                "n_atoms": "",
+                "n_residues": "",
+                "n_frames": "",
+                "time_step": "",
+                "total_time": "",
+                "box_dimensions": "",
+                "system_name": ""
+            })
+    
+    topo_ext = os.path.splitext(topo.filename)[1]
+    traj_ext = os.path.splitext(traj.filename)[1]
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=topo_ext) as topo_file, \
+         tempfile.NamedTemporaryFile(delete=False, suffix=traj_ext) as traj_file:
+
+        topo.save(topo_file.name)
+        traj.save(traj_file.name)
+
+        try:
+            u = Universe(topo_file.name, traj_file.name)
+            atoms = u.atoms
+            trajectory = u.trajectory
+
+            n_atoms = len(atoms)
+            n_residues = len(u.residues)
+            n_frames = len(trajectory)
+            time_step = trajectory.dt if hasattr(trajectory, 'dt') else None
+            total_time = time_step * n_frames if time_step else None
+
+            box = trajectory.ts.dimensions if hasattr(trajectory.ts, 'dimensions') else None
+            box_str = f"{box[0]:.1f} x {box[1]:.1f} x {box[2]:.1f} Å" if box is not None else "N/A"
+
+
+            return jsonify({
+                "title": f"Simulation with {n_atoms} atoms",
+                "description": f"Trajectory has {n_frames} frames and {n_residues} residues.",
+                "n_atoms": n_atoms,
+                "n_residues": n_residues,
+                "n_frames": n_frames,
+                "time_step": f"{time_step:.2f} ps" if time_step else "N/A",
+                "total_time": f"{total_time:.2f} ps" if total_time else "N/A",
+                "box_dimensions": box_str,
+                "system_name": u.atoms.segments.segids[0] if u.atoms.segments.segids else "Unnamed"
+            })
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500

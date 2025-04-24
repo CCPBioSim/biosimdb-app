@@ -27,7 +27,7 @@
     <!--*******************************************-->
 
 
-    <form class="upload-form container bg-white rounded border" action="/webform" method="POST" enctype="multipart/form-data" id="downloadForm" >
+    <form class="upload-form container bg-white rounded border" action="/webform" method="POST" enctype="multipart/form-data" id="simulationForm" >
     <div class="container bg-white">
         </br>
         <h1 class="text-left">Add Your Simulation</h1>
@@ -45,12 +45,16 @@
             <label for="name" class="form-label">Corresponding author<span class="required">*</span></label>
             <input type="text" class="form-control" id="name" placeholder="Enter full name" name="creator_name" required>
             </div>
+        </div>
 
+        <div class="row">
             <div class="col-sm">
             <label for="input_email" class="form-label">Corresponding email address <span class="required">*</span></label>
             <input type="email" class="form-control" id="input_email" aria-describedby="emailHelp" placeholder="Enter an institutional email" name="creator_email" required>
             </div>
+        </div>
 
+        <div class="row">
             <div class="col-sm">
             <label for="institution" class="form-label">Corresponding institution <span class="required">*</span></label>
             <input type="text" class="form-control" id="institution" aria-describedby="emailHelp" placeholder="Enter institution name" name="creator_institution" required>
@@ -94,38 +98,59 @@
         <textarea class="form-control" id="description" rows="2" name="sim_description" required placeholder="Add why the simulation was performed and its scientific significance"></textarea>
 
           <!--*******************************************-->   
-          <div id="downloadFields">
+          <div id="simulationFields">
             <br /><br /><h4>3. Add simulation files</h4>
             <p>Upload a topology and trajectory file, and/or upload the aiida archive file containing the full provenance of your simulation. </p>
             <p>Note: A maximum of 5 entries can be uploaded per submission.</p>
             <p>Note: Multiple trajectory files can be uploaded with an associated topology file.</p>
-            <div class="entry-block">
+            <div class="entry-block" data-index="1">
                 <h5>Entry 1.</h5>
                 <div class="row form-group">
                     <div class="col-sm">
-                        <label for="download1" class="form-label">Upload topology file
+                        <label for="simulation1" class="form-label">Upload topology file
                         </label>
-                        <input class="form-control" type="file" id="download1" name="topology_file1[]">
+                        <input class="form-control" type="file" id="simulation1" name="topology_file1[]">
                     </div>
                     <div class="col-sm">
-                        <label for="download1" class="form-label">Upload trajectory file/s
+                        <label for="simulation1" class="form-label">Upload trajectory file/s
                         </label>
-                        <input class="form-control" type="file" id="download1" name="trajectory_file1[]" multiple="">
+                        <input class="form-control" type="file" id="simulation1" name="trajectory_file1[]" multiple="">
                     </div>
                     <div class="col-sm">
-                        <label for="download1" class="form-label">Upload aiida archive file</label>
-                        <input class="form-control" type="file" id="download1" name="aiida_archive_file1[]">
+                        <label for="simulation1" class="form-label">Upload aiida archive file</label>
+                        <input class="form-control" type="file" id="simulation1" name="aiida_archive_file1[]">
                     </div>
                 </div> 
+
+                <div class="mt-3 d-grid gap-2">
+                <button type="button" class="btn btn-secondary btn-sm extract-metadata-btn" id="extractMetadataField1">Add entry metadata</button>
+                </div>
+
+
+                <div class="accordion mt-3" id="metadataAccordionEntry1">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="headingMetadata1">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMetadata1" aria-expanded="false" aria-controls="collapseMetadata1">
+                          Entry 1 Metadata
+                        </button>
+                      </h2>
+                      <div id="collapseMetadata1" class="accordion-collapse collapse" aria-labelledby="headingMetadata1" data-bs-parent="#metadataAccordionEntry1">
+
+                        <div class="accordion-body metadata-fields1">
+                            <!-- Auto-populate metadata here -->
+                        </div>
+
+                      </div>
+                    </div>
+                </div>
+
             </div> 
           </div>  
           <!--*******************************************-->   
         
           <div class="mt-3 d-grid gap-2">
 
-            <button type="button" class="btn btn-secondary btn-sm" id="extractMetadataField">Extract entry metadata</button>
-
-            <button type="button" class="btn btn-secondary btn-sm" id="addDownloadField">Add another simulation entry</button>
+            <button type="button" class="btn btn-secondary btn-sm" id="addSimulationField">Add another simulation entry</button>
 
             <input type="submit" class="btn btn-outline-success btn-lg" name="submit" value="Submit">
           </div>
