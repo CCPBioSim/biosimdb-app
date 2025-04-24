@@ -9,7 +9,7 @@
 
     {% block content %}
 
-    <!--*******************************************-->
+    <!--Alert the user at the top of the form after form is submitted-->
     <div class="container">
         {# get_flashed_messages() is auto sent to the template with the flash() call #}
         {% for mess in get_flashed_messages()  %}
@@ -24,9 +24,8 @@
 
         {% endfor %}
     </div>
-    <!--*******************************************-->
 
-
+    <!--Start of webform-->
     <form class="upload-form container bg-white rounded border" action="/webform" method="POST" enctype="multipart/form-data" id="simulationForm" >
     <div class="container bg-white">
         </br>
@@ -35,11 +34,11 @@
             Add a simulation to your database by filling in the form below. 
         </p>
 
-
-        <!--*******************************************-->
+        <!--Fields for author information-->
         <br /><h4>1. Author information</h4>
             <p>Add the name and email of the corresponding author, along with any authors and citations that have contributed to this work.</p>
 
+        <!-- Field for adding name for corresponding author -->
         <div class="row">
             <div class="col-sm">
             <label for="name" class="form-label">Corresponding author<span class="required">*</span></label>
@@ -47,6 +46,7 @@
             </div>
         </div>
 
+        <!-- Field for adding email for corresponding author -->
         <div class="row">
             <div class="col-sm">
             <label for="input_email" class="form-label">Corresponding email address <span class="required">*</span></label>
@@ -54,25 +54,22 @@
             </div>
         </div>
 
+        <!-- Field for adding institution for corresponding author -->
         <div class="row">
             <div class="col-sm">
             <label for="institution" class="form-label">Corresponding institution <span class="required">*</span></label>
             <input type="text" class="form-control" id="institution" aria-describedby="emailHelp" placeholder="Enter institution name" name="creator_institution" required>
             </div>
         </div>
-        <!--*******************************************-->
 
-
-        <!--*******************************************-->
+        <!--Fields for adding addtional authors-->
         <div id="authorFields"></div>
 
         <div class="mt-3 d-grid gap-2">
             <button type="button" class="btn btn-secondary btn-sm" id="addAuthorField">Add another author</button>
         </div>
-        <!--*******************************************-->
 
-
-        <!--*******************************************-->
+        <!--Fields for adding citations-->
         <div id="citationFields">
             <div class="row">
                 <div class="col-sm">
@@ -85,10 +82,8 @@
             <div class="mt-3 d-grid gap-2">
                 <button type="button" class="btn btn-secondary btn-sm" id="addCitationField">Add another citation</button>
             </div>
-        <!--*******************************************-->
 
-
-        <!--*******************************************-->        
+        <!--Section of form for simulation files-->        
         <br /><br /><h4>2. Simulation details</h4>
             <p>Add a title and description of your simulation, similar to a scientific journal.</p>
         <label for="system" class="form-label">Title <span class="required">*</span></label>
@@ -97,12 +92,23 @@
         <label for="description" class="form-label">Abstract <span class="required">*</span></label>
         <textarea class="form-control" id="description" rows="2" name="sim_description" required placeholder="Add why the simulation was performed and its scientific significance"></textarea>
 
-          <!--*******************************************-->   
+          <!--Fields for adding simulation entries-->   
           <div id="simulationFields">
             <br /><br /><h4>3. Add simulation files</h4>
             <p>Upload a topology and trajectory file, and/or upload the aiida archive file containing the full provenance of your simulation. </p>
-            <p>Note: A maximum of 5 entries can be uploaded per submission.</p>
-            <p>Note: Multiple trajectory files can be uploaded with an associated topology file.</p>
+
+            <div class="card border-secondary mb-3">
+                <div class="card-header">Notes</div>
+                <div class="card-body text-secondary">
+                  <!-- <h5 class="card-title">Secondary card title</h5> -->
+                  <ul>
+                  <li class="card-text">A maximum of 5 entries can be uploaded per submission.</li>
+                  <li class="card-text">Multiple trajectory files can be uploaded with an associated topology file.</li>
+                  </ul>
+                </div>
+            </div>
+
+            <!-- Fields for uploading files for first simulation entry -->
             <div class="entry-block" data-index="1">
                 <h5>Entry 1.</h5>
                 <div class="row form-group">
@@ -122,11 +128,12 @@
                     </div>
                 </div> 
 
+                <!-- Button for extracting metadata from files -->
                 <div class="mt-3 d-grid gap-2">
                 <button type="button" class="btn btn-secondary btn-sm extract-metadata-btn" id="extractMetadataField1">Add entry metadata</button>
                 </div>
 
-
+                <!-- Accordion for entry metadata -->
                 <div class="accordion mt-3" id="metadataAccordionEntry1">
                     <div class="accordion-item">
                       <h2 class="accordion-header" id="headingMetadata1">
@@ -146,18 +153,18 @@
 
             </div> 
           </div>  
-          <!--*******************************************-->   
         
           <div class="mt-3 d-grid gap-2">
 
+            <!-- Buttom for adding more simulation entries -->
             <button type="button" class="btn btn-secondary btn-sm" id="addSimulationField">Add another simulation entry</button>
 
+            <!-- Button for submitting form -->
             <input type="submit" class="btn btn-outline-success btn-lg" name="submit" value="Submit">
+            
           </div>
           <br />
-        <!--*******************************************-->
 
-        
     </div>
     </form>
 
