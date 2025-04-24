@@ -26,7 +26,7 @@ function getSimulationEntryHTML(index) {
         <h5>Entry ${index}.</h5>
 
         <div class="row">
-            <div class="col-sm">
+            <div class="mt-3 d-grid gap-2">
                 <button type="button" class="btn btn-sm btn-outline-danger remove-btn" data-type="entry">Remove</button>
             </div>
         </div>
@@ -128,7 +128,7 @@ document.getElementById('addAuthorField').addEventListener('click', function() {
             <input type="text" class="form-control" id="author${authorCount}" placeholder="Enter full name of additional author" name="author_name[]">
             </div>
 
-            <div class="col-sm">
+            <div class="mt-3 d-grid gap-2">
                 <button type="button" class="btn btn-sm btn-outline-danger remove-btn" data-type="author">Remove</button>
             </div>
 
@@ -157,7 +157,7 @@ document.getElementById('addCitationField').addEventListener('click', function()
             <input type="text" class="form-control" id="author${citationCount}" placeholder="Include DOI of the published work related to uploaded simulation/s" name="citation_name[]">
             </div>
 
-            <div class="col-sm">
+            <div class="mt-3 d-grid gap-2">
                 <button type="button" class="btn btn-sm btn-outline-danger remove-btn" data-type="citation">Remove</button>
             </div>
 
