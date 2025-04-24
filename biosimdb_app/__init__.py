@@ -16,7 +16,7 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, # name of the current Python module
                 template_folder="templates", # where html files are stored.  
-                static_folder="templates", # used for css file.              
+                static_folder="static", # used for css and js files.              
                 instance_relative_config=True
                 ) # create flask instance
     app.config.from_mapping(
@@ -56,5 +56,8 @@ def create_app(test_config=None):
 
     from .form import form_bp
     app.register_blueprint(form_bp)
+
+    from .invenio import invenio_bp
+    app.register_blueprint(invenio_bp)
 
     return app
