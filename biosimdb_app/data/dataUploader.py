@@ -215,8 +215,8 @@ def upload_single_file(file, new_file_name, current_file_name, destination_folde
     """
     # Determine file length (optional, for logging)
     file.seek(0, os.SEEK_END)
-    file_length = file.tell()
-    print("XXXX", file.filename, file_length)
+    # file_length = file.tell()
+    # print("XXXX", file.filename, file_length)
 
     # Reset cursor before saving
     file.seek(0)
@@ -233,7 +233,7 @@ def upload_single_file(file, new_file_name, current_file_name, destination_folde
     file.save(new_file_path)
 
     # Check saved size
-    size = os.stat(new_file_path).st_size
-    print("XXXX2", file.filename, size)
+    # size = os.stat(new_file_path).st_size
+    # print("XXXX2", file.filename, size)
 
     return None, None, None
