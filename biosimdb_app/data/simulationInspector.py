@@ -14,6 +14,18 @@ def get_protein_seq(u):
     Get the sequence of proteins in an mda universe
     """
     protein = u.select_atoms("protein").residues
+
+    # Bio.SeqIO library used by MDAnalysis doesn't recognise HIP histidine residue name
+    if "HIP" in protein.resnames:
+        # Select all residues with the resname "HIP"
+        selection_string = "resname HIP"
+        residues = u.select_atoms(selection_string).residues
+
+        # Change the resname of the selected residues to "HIS"
+        new_resnames = ["HIS"] * len(residues)
+        residues.resnames = new_resnames
+        protein = u.select_atoms("protein").residues
+
     sequence = protein.sequence(id="sequence1", name="protein1")
     return sequence
 
@@ -92,5 +104,5 @@ def fetch_top_traj_files(sim_records):
             extension = os.path.splitext(top[0])[1].replace('.', '')
             u = mda.Universe(top[0], traj, topology_format=extension)
             # do things with the universe...
-            sequence = get_protein_seq(u)
-            identifiers = search_rcsb(sequence)
+            # sequence = get_protein_seq(u)
+            # identifiers = search_rcsb(sequence)
