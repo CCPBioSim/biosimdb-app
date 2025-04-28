@@ -97,13 +97,15 @@
             <br /><br /><h4>3. Add simulation files</h4>
             <p>Upload a topology and trajectory file, and/or upload the aiida archive file containing the full provenance of your simulation. </p>
 
+            <!-- Add a card with notes about how many entries can be uploaded -->
             <div class="card border-secondary mb-3">
-                <div class="card-header">Notes</div>
+                <div class="card-header">Notes:</div>
                 <div class="card-body text-secondary">
-                  <!-- <h5 class="card-title">Secondary card title</h5> -->
+                  <!-- <h5 class="card-title">Note</h5> -->
                   <ul>
                   <li class="card-text">A maximum of 5 entries can be uploaded per submission.</li>
-                  <li class="card-text">Multiple trajectory files can be uploaded with an associated topology file.</li>
+                  <li class="card-text">For each simulation entry, multiple trajectory files can be uploaded with the associated topology file.</li>
+                  <li class="card-text">Automatically add metadata associated with each entry using the "Add entry metadata" button. Please fill in any missing metadata fields where applicable.</li>
                   </ul>
                 </div>
             </div>
@@ -128,9 +130,18 @@
                     </div>
                 </div> 
 
-                <!-- Button for extracting metadata from files -->
+                
                 <div class="mt-3 d-grid gap-2">
-                <button type="button" class="btn btn-secondary btn-sm extract-metadata-btn" id="extractMetadataField1">Add entry metadata</button>
+                    <div class="row">
+                        <div class="col-sm mt-3 d-grid">
+                            <!-- Button for extracting metadata from files -->
+                            <button type="button" class="btn btn-outline-primary btn-sm extract-metadata-btn" id="extractMetadataField1">Add entry metadata</button>
+                        </div>
+                        <div class="col-sm mt-3 d-grid">
+                            <!-- Button to clear metadata -->
+                            <button type="button" class="btn btn-outline-warning btn-sm clear-metadata-btn" id="clearMetadataField1">Clear Metadata</button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Accordion for entry metadata -->
@@ -150,18 +161,18 @@
                       </div>
                     </div>
                 </div>
-
+            
             </div> 
           </div>  
         
           <div class="mt-3 d-grid gap-2">
 
-            <!-- Buttom for adding more simulation entries -->
+            <!-- Button for adding more simulation entries -->
             <button type="button" class="btn btn-secondary btn-sm" id="addSimulationField">Add another simulation entry</button>
 
             <!-- Button for submitting form -->
             <input type="submit" class="btn btn-outline-success btn-lg" name="submit" value="Submit">
-            
+
           </div>
           <br />
 

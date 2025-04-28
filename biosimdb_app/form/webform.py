@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import copy
 from . import form_bp
 from flask import render_template, request, flash, jsonify
 from biosimdb_app.utils.db import get_db
@@ -8,6 +9,8 @@ import tempfile
 from MDAnalysis import Universe
 
 from biosimdb_app.data.dataUploader import save_uploaded_files
+from biosimdb_app.metadata.dsmd_templates import grouped_metadata_template
+from biosimdb_app.data.simulationInspector import get_protein_seq
 
 @form_bp.route('/webform', methods=['GET', 'POST'])
 def webform():
@@ -104,21 +107,13 @@ def parse_metadata():
     topo = request.files.get('topology')
     traj = request.files.get('trajectory')
 
+    # biosimdb_metadata_template_empty = biosimdb_metadata_template.copy()
+    biosimdb_metadata_template_empty = copy.deepcopy(grouped_metadata_template)
+
     # Just return the empty metadata fields if no files are uploaded
     if not topo or not traj:
-        # return jsonify({'error': 'Missing files'}), 400
-        return jsonify({
-                "alert": "Simulation files are missing. Please upload files to automatically extract metadata.",
-                "title": "",
-                "description": "",
-                "n_atoms": "",
-                "n_residues": "",
-                "n_frames": "",
-                "time_step": "",
-                "total_time": "",
-                "box_dimensions": "",
-                "system_name": ""
-            })
+        biosimdb_metadata_template_empty["alert"] = "Simulation files are missing. Please upload files to automatically extract metadata or fill in metadata fields manually."
+        return jsonify(biosimdb_metadata_template_empty)
     
     topo_ext = os.path.splitext(topo.filename)[1]
     traj_ext = os.path.splitext(traj.filename)[1]
@@ -131,29 +126,47 @@ def parse_metadata():
 
         try:
             u = Universe(topo_file.name, traj_file.name)
-            atoms = u.atoms
-            trajectory = u.trajectory
-
-            n_atoms = len(atoms)
-            n_residues = len(u.residues)
-            n_frames = len(trajectory)
-            time_step = trajectory.dt if hasattr(trajectory, 'dt') else None
-            total_time = time_step * n_frames if time_step else None
-
-            box = trajectory.ts.dimensions if hasattr(trajectory.ts, 'dimensions') else None
-            box_str = f"{box[0]:.1f} x {box[1]:.1f} x {box[2]:.1f} Å" if box is not None else "N/A"
+            biosimdb_metadata_template = extract_simulation_metadata(u, 
+                                    biosimdb_metadata_template_empty)
 
 
-            return jsonify({
-                "title": f"Simulation with {n_atoms} atoms",
-                "description": f"Trajectory has {n_frames} frames and {n_residues} residues.",
-                "n_atoms": n_atoms,
-                "n_residues": n_residues,
-                "n_frames": n_frames,
-                "time_step": f"{time_step:.2f} ps" if time_step else "N/A",
-                "total_time": f"{total_time:.2f} ps" if total_time else "N/A",
-                "box_dimensions": box_str,
-                "system_name": u.atoms.segments.segids[0] if u.atoms.segments.segids else "Unnamed"
-            })
+            return jsonify(biosimdb_metadata_template)
         except Exception as e:
             return jsonify({'error': str(e)}), 500
+        
+
+def extract_simulation_metadata(u, biosimdb_metadata_template):
+    """
+    Extract simulation metadata from MDAnalysis universe and fill in the 
+    associated metadata dictionary
+    """
+    atoms = u.atoms
+    trajectory = u.trajectory
+
+    n_atoms = len(atoms)
+    n_residues = len(u.residues)
+    n_frames = len(trajectory)
+    time_step = trajectory.dt if hasattr(trajectory, 'dt') else None
+    total_time = time_step * n_frames if time_step else None
+
+    box = trajectory.ts.dimensions if hasattr(trajectory.ts, 'dimensions') else None
+    box_str = f"{box[0]:.1f} x {box[1]:.1f} x {box[2]:.1f} Å" if box is not None else ""
+    box_str_angles = f"alpha: {box[3]:.1f}, beta: {box[4]:.1f}, gamma: {box[5]:.1f} degrees" if box is not None and len(box) == 6 else ""
+    
+    # get the sequence of the proteins in the system
+    sequence = get_protein_seq(u)
+    sequence = str(sequence.seq) if sequence else ""
+
+    # populate the metadata template
+    biosimdb_metadata_template["1_system_details"]["title"] = f"Simulation with {n_atoms} atoms"
+    biosimdb_metadata_template["1_system_details"]["description"] = f"Trajectory has {n_frames} frames and {n_residues} residues."
+    biosimdb_metadata_template["2_simulation_settings"]["framestep"] = f"{time_step:.2f} ps" if time_step else ""
+    biosimdb_metadata_template["2_simulation_settings"]["total_time"] = f"{total_time:.2f} ps" if total_time else ""
+    biosimdb_metadata_template["4_box_properties"]["box_dimensions"] = box_str
+    biosimdb_metadata_template["4_box_properties"]["box_angles"] = box_str_angles
+    biosimdb_metadata_template["1_system_details"]["atom_count"] = n_atoms
+    biosimdb_metadata_template["1_system_details"]["molecule_count"] = n_residues
+    biosimdb_metadata_template["1_system_details"]["frame_count"] = n_frames
+    biosimdb_metadata_template["1_system_details"]["protein_sequences"] = sequence
+
+    return biosimdb_metadata_template
