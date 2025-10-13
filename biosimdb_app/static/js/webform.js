@@ -262,7 +262,7 @@ function renderMetadataFields(index, entry, metadata) {
     if (metadata.alert) {
         // alert(metadata.alert);
         const alert = document.createElement('div');
-        alert.className = 'alert alert-warning';
+        alert.className = 'alert alert-danger';
         alert.role = 'alert';
         alert.textContent = `Automatic metadata extraction failed: ${metadata.alert}`;
         container.appendChild(alert);

@@ -52,7 +52,11 @@ grouped_metadata_template = {
         "trajectory_sizes": [""]
     },
     "6_simulation_metrics": {
-        "average_energy": "",
+        "average_kinetic_energy": "",
+        "average_potential_energy": "",
+        "average_temperature": "",
+        "average_pressure": "",
+        "average_volume": "",
     }
 }
 

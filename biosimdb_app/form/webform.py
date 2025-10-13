@@ -112,7 +112,7 @@ def parse_metadata():
 
     # Just return the empty metadata fields if no files are uploaded
     if not topo or not traj:
-        biosimdb_metadata_template_empty["alert"] = "Simulation files are missing. Please upload files to automatically extract metadata or fill in metadata fields manually."
+        biosimdb_metadata_template_empty["alert"] = "Simulation files are missing. Please upload files to automatically extract metadata and fill in metadata fields manually."
         return jsonify(biosimdb_metadata_template_empty)
     
     topo_ext = os.path.splitext(topo.filename)[1]
