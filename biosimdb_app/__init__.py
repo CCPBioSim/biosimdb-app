@@ -14,6 +14,7 @@ load_dotenv()
 UPLOAD_FOLDER = "/tmp"
 
 
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, # name of the current Python module
