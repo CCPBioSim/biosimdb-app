@@ -9,6 +9,8 @@ import os
 __version__ = "0.0.1"
 
 from flask import Flask
+from dotenv import load_dotenv
+load_dotenv()
 UPLOAD_FOLDER = "/tmp"
 
 
@@ -28,6 +30,18 @@ def create_app(test_config=None):
         UPLOAD_FOLDER=UPLOAD_FOLDER,
         DATA_FOLDER=os.path.join(app.instance_path, 'simulations'),
     ) # sets some default configuration that the app will use
+
+    # invenio app configs
+    app.config.from_mapping(
+        CLIENT_ID = os.getenv("CLIENT_ID", ""),
+        CLIENT_SECRET = os.getenv("CLIENT_SECRET", ""),
+        AUTH_URL = os.getenv("AUTH_URL"),
+        TOKEN_URL= os.getenv("TOKEN_URL"),
+        API_BASE = os.getenv("API_BASE"),
+        REDIRECT_URI = os.getenv("REDIRECT_URI"),
+        SCOPES = os.getenv("SCOPES", "").strip(),
+        STATE_FIXED = "xyz123"  # fine for testing; random per-session in prod
+    ) # invenio app configs
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -56,6 +70,9 @@ def create_app(test_config=None):
 
     from .form import form_bp
     app.register_blueprint(form_bp)
+
+    from .login import bp as login_bp
+    app.register_blueprint(login_bp)
 
     from .invenio import invenio_bp
     app.register_blueprint(invenio_bp)
