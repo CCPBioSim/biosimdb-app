@@ -1,0 +1,77 @@
+{% extends "main/base.html" %}
+
+{% from "macros/webform2_macros.html" import render_fields, render_files, render_metadata, render_guidance, render_simulation_modal with context %}
+
+
+{% block content %}
+
+
+<div>
+<form class="upload-form container bg-white rounded border p-4 mb-5" action="/webform2" method="POST" enctype="multipart/form-data" id="simulationForm">
+        <h2 class="text-center"></br>Data Submission Form</h2>
+
+        <!-- Flash Banner -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message|safe }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+            {% for section_key, section in schema.items() %}
+                <div class="form-step card shadow-sm mb-4" data-step="{{ loop.index0 }}">
+
+                    <div class="card-header d-flex justify-content-between">
+                        <strong>{{ loop.index }}. {{ section.title }}</strong>
+                    </div>
+
+                    <div class="card-body section-container"
+                        data-section="{{ section_key }}"
+                        {% if section.repeatable and section.max %}data-max="{{ section.max }}"{% endif %}>
+                        <p class="text-muted mb-4">{{ section.description }}</p>
+
+                        {% if section.guidance %}
+                            {{ render_guidance(section.guidance) }}
+                        {% endif %}
+
+                        {% if not section.repeatable %}
+                            {{ render_fields(section.fields, section_key, 1) }}
+                        {% else %}
+                            <div class="section-instance" data-index="1">
+                                {% if section.files %}
+                                    {{ render_files(section.files, 1) }}
+                                {% endif %}
+                                {% if section.fields %}
+                                    {{ render_fields(section.fields, section_key, 1) }}
+                                {% endif %}
+                                {% if section.metadata %}
+                                    {{ render_metadata(section.metadata, 1) }}
+                                {% endif %}
+
+                                <button type="button" class="btn btn-sm btn-outline-danger remove-section w-100 mt-2">Remove</button>
+                                <br>
+                                <button type="button" class="btn btn-sm btn-outline-secondary w-100 add-section mt-1" data-section="{{ section_key }}">Add Another {{ section.title }}</button>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+
+        <div class="mt-3 d-grid gap-2">
+            <input type="submit" class="btn btn-outline-success btn-lg" name="submit" value="Submit">
+        </div>
+        <br>
+
+</form>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script type="module" src="{{ url_for('static', filename='js/webform2/main.js') }}"></script>
+{% endblock %}

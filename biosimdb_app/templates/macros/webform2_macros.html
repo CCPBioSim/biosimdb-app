@@ -1,0 +1,152 @@
+{% macro render_fields(fields, group_name, index) %}
+<div class="row g-3">
+{% for field_name, field in fields.items() %}
+
+{% set key = group_name ~ '[' ~ index ~ '][' ~ field_name ~ ']' %}
+{% set value = form_data.get(key, '') %}
+{% set error = errors.get(key) %}
+{% set depends = field.get("depends_on") %}
+
+
+{% if field.type == "textarea" %}
+    {% set col_class = "col-12" %}
+{% elif field.type == "checkbox" %}
+    {% set col_class = "col-md-4 col-lg-3" %}
+{% else %}
+    {% set col_class = "col-md-6 col-lg-6" %}
+{% endif %}
+<div class="{{ col_class }} field-container">
+
+    {% if depends %}
+        {% set parent_key = group_name ~ '[' ~ index ~ '][' ~ depends ~ ']' %}
+        {% set visible = form_data.get(parent_key) %}
+        <div id="{{ key }}_target" class="conditional-field" {% if not visible %}style="display:none"{% endif %}>
+    {% endif %}
+
+    {% if field.hint %}
+        <span tabindex="0"
+              data-bs-toggle="popover"
+              data-bs-trigger="focus"
+              data-bs-content="{{ field.hint }}"
+              class="form-label"
+              style="cursor:pointer;">
+            {{ field.label }}{% if field.required %} <span class="text-danger">*</span>{% endif %}
+        </span>
+    {% else %}
+        <label class="form-label">{{ field.label }}{% if field.required %} <span class="text-danger">*</span>{% endif %}</label>
+    {% endif %}
+
+    {% if field.type == "textarea" %}
+        <textarea class="form-control form-control-sm {% if error %}is-invalid{% endif %}"
+                  name="{{ key }}"
+                  {% if field.required %}required{% endif %}>{{ value }}</textarea>
+    {% elif field.type == "select" %}
+        <select class="form-select form-select-sm {% if error %}is-invalid{% endif %}"
+                name="{{ key }}"
+                {% if field.required %}required{% endif %}>
+            {% for opt in field.options %}
+                <option value="{{ opt }}" {% if form_data.get(key) == opt %}selected{% endif %}>{{ opt }}</option>
+            {% endfor %}
+        </select>
+
+    {% elif field.type == "checkbox" %}
+
+    {% if field.get("controls") %}
+    {% set target_key = group_name ~ '[' ~ index ~ '][' ~ field.controls ~ ']' %}
+    {% endif %}
+    <input type="checkbox"
+        class="form-check-input conditional-toggle"
+        data-target="{{ target_key }}_target"
+        name="{{ key }}"
+        value="1"
+        {% if value %}checked{% endif %}>
+
+    {% else %}
+        <input type="text"
+               class="form-control form-control-sm {% if error %}is-invalid{% endif %}"
+               value="{{ value }}"
+               name="{{ key }}"
+               {% if field.required %}required{% endif %}>
+    {% endif %}
+
+    {% if error %}
+        <div class="invalid-feedback">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    {% if field.repeatable %}
+        <button type="button" class="btn btn-sm btn-outline-secondary w-100 add-field mt-1" data-field="{{ field_name }}">Add Another {{ field.label }}</button>
+    {% endif %}
+
+
+</div>
+{% endfor %}
+</div>
+{% endmacro %}
+
+{% macro render_guidance(field) %}
+<div class="card border-secondary mb-3">
+    <div class="card-header">{{ field.label }}</div>
+    <div class="card-body text-secondary">
+        <ul>
+            {% for opt in field.options %}
+            <li>{{ opt }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro render_files(files, index) %}
+</br>
+<h5 class="entry-number">Entry {{ index }}</h5>
+<div class="row">
+    {% for file_key, file in files.items() %}
+    <div class="col-md-4 mb-3">
+        <label class="form-label">{{ file.label }} {% if file.required %} <span class="text-danger">*</span>{% endif %}</label>
+        <input type="file"
+               class="form-control"
+               {% if file.multiple %}multiple{% endif %}
+               {% if file.required %}required{% endif %}
+               name="{{ file_key }}[{{ index }}]{% if file.multiple %}[]{% endif %}">
+    </div>
+    {% endfor %}
+</div>
+
+<button type="button"
+        class="btn btn-outline-primary w-100 extract-metadata-btn"
+        data-index="{{ index }}">
+    Extract Metadata
+</button>
+
+<button type="button"
+        class="btn btn-outline-warning w-100 clear-metadata-btn mt-1"
+        data-index="{{ index }}">
+    Clear Files and Metadata
+</button>
+{% endmacro %}
+
+{% macro render_metadata(metadata, index) %}
+<div class="accordion mt-3 metadata-accordion" data-meta-index="{{ index }}">
+    <div class="accordion-item">
+        <h2 class="accordion-header metadata-header">
+            <button class="accordion-button collapsed metadata-toggle"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseMetadata{{ index }}"
+                    aria-expanded="false"
+                    aria-controls="collapseMetadata{{ index }}">
+                Entry {{ index }} Metadata
+            </button>
+        </h2>
+        <div class="accordion-collapse collapse metadata-collapse" id="collapseMetadata{{ index }}">
+            <div class="accordion-body">
+                {% for meta_key, meta_group in metadata.items() %}
+                    {{ render_fields(meta_group, meta_key, index) }}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endmacro %}
