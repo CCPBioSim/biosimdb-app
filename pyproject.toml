@@ -30,7 +30,7 @@ dependencies = [
     "gunicorn==23.0.0", 
     "pyvis==0.3.2",
     "python-dotenv==1.0.1",
-    "MDAnalysis==2.7.0",
+    "MDAnalysis==2.10.0",
     "biopython==1.84",
     "rcsbsearchapi==1.6.0",
 ]
