@@ -38,10 +38,11 @@ def create_app(test_config=None):
         CLIENT_SECRET = os.getenv("CLIENT_SECRET", ""),
         AUTH_URL = os.getenv("AUTH_URL"),
         TOKEN_URL= os.getenv("TOKEN_URL"),
+        BASE_URL = os.getenv("BASE_URL"),
         API_BASE = os.getenv("API_BASE"),
         REDIRECT_URI = os.getenv("REDIRECT_URI"),
         SCOPES = os.getenv("SCOPES", "").strip(),
-        STATE_FIXED = "xyz123"  # fine for testing; random per-session in prod
+        # STATE_FIXED = "xyz123"  # fine for testing; random per-session in prod
     ) # invenio app configs
 
     if test_config is None:
