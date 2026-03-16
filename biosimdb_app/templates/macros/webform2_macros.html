@@ -79,6 +79,10 @@
         <button type="button" class="btn btn-sm btn-outline-secondary w-100 add-field mt-1" data-field="{{ field_name }}">Add Another {{ field.label }}</button>
     {% endif %}
 
+    {% if depends %}
+    </div>
+    {% endif %}
+
 
 </div>
 {% endfor %}
